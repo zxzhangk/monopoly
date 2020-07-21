@@ -1,0 +1,193 @@
+logging:
+  level:
+    ROOT: INFO
+    org.springframework.web: INFO
+spring:
+  application:
+    name: monopoly
+server:
+  port: 8080
+
+customize:
+  users:
+    - name: 寂弦
+      nick: 弦
+      color: brown
+      token: xxx1
+    - name: 钻头
+      nick: 钻
+      color: green
+      token: xxx2
+  maps:
+    - name: 起点
+      type: start
+
+    - name: 中山北路
+      type: estate
+      color: pink
+      price: 200
+
+    - name: 欢乐卡
+      type: happy
+
+    - name: 中山南一路
+      type: estate
+      color: pink
+      price: 600
+
+    - name: 所得税
+      type: tax
+      price: 2000
+
+    - name: 人民广场车站
+      type: station
+      price: 2000
+
+    - name: 交通路
+      type: happy
+      color: blue
+      price: 1000
+
+    - name: 机会
+      type: chance
+
+    - name: 四川北路
+      type: start
+      color: blue
+      price: 1000
+      detail: 60,300,900,2700,4000,5500,500,500
+
+    - name: 金宁东路
+      type: estate
+      color: blue
+      price: 1200
+
+    - name: 坐牢/路过
+      type: other
+
+    - name: 中华路
+      type: estate
+      color: darkblue
+      price: 1400
+
+    - name: 电力公司
+      type: livelihood
+      price: 1500
+
+    - name: 四平路
+      type: estate
+      color: darkblue
+      price: 1400
+
+    - name: 浦东南路
+      type: estate
+      color: darkblue
+      price: 1600
+
+    - name: 徐家汇车站
+      type: station
+      price: 2000
+
+    - name: 恒丰路
+      type: estate
+      color: orange
+      price: 1800
+
+    - name: 命运
+      type: destiny
+
+    - name: 河南北路
+      type: estate
+      color: orange
+      price: 1800
+
+    - name: 西藏中路
+      type: estate
+      color: orange
+      price: 2000
+
+    - name: 免费停车场
+      type: other
+
+    - name: 石门二路
+      type: estate
+      color: red
+      price: 2200
+
+    - name: 机会
+      type: chance
+
+    - name: 陕西南路
+      type: estate
+      color: red
+      price: 2200
+
+    - name: 天目路
+      type: estate
+      color: red
+      price: 2400
+
+    - name: 汉中车站
+      type: station
+      price: 2000
+
+    - name: 长寿路
+      type: estate
+      color: chocolate
+      price: 2600
+
+    - name: 延安西路
+      type: estate
+      color: chocolate
+      price: 2600
+
+    - name: 自来水厂
+      type: livelihood
+      price: 1500
+
+    - name: 人民路
+      type: estate
+      color: chocolate
+      price: 2600
+
+    - name: 进牢
+      type: prison
+
+    - name: 淮海中路
+      type: estate
+      color: green
+      price: 3000
+
+    - name: 复兴中路
+      type: estate
+      color: green
+      price: 3000
+
+    - name: 命运
+      type: destiny
+
+    - name: 建国东路
+      type: estate
+      color: green
+      price: 3200
+
+    - name: 上海车站
+      type: station
+      price: 2000
+
+    - name: 机会
+      type: chance
+
+    - name: 南京西路
+      type: estate
+      color: darkslategray
+      price: 3500
+
+    - name: 所得税
+      type: tax
+      price: 2000
+
+    - name: 北京东路
+      type: estate
+      color: darkslategray
+      price: 4000

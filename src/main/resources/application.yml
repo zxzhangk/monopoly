@@ -9,11 +9,13 @@ server:
   port: 8080
 
 customize:
+  initMoney: 15200
   users:
     - name: 寂弦
       nick: 弦
       color: cornflowerblue
       token: xxx1
+
     - name: 钻头
       nick: 钻
       color: darkslategray

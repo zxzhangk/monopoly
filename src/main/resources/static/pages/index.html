@@ -225,12 +225,7 @@
                 </div>
             </td>
             <td colspan="9" rowspan="2" style="line-height: 40px; font-size: larger">
-                钻头 骰子点数为 10，前进10步</br>
-                钻钻头 抽中欢乐卡 击落战机，奖励2000</br>
-                轮到 屈子煊</br>
-                屈子煊 骰子点数为 5，前进5步</br>
-                屈子煊 缴纳过路费 2000 给 钻头， 但金额不足</br>
-                屈子煊 发起交易，交易成功</br>
+                <div v-for="m in messages" >{{m}}</div>
             </td>
             <td v-bind:style="{ color: map[11].color }">
                 <div class="room" v-bind:style="{ 'background-color': map[11].ownerColor }">
@@ -284,24 +279,26 @@
                     <div class="user" v-for="u in map[37].users" v-bind:style="{'border': u.color + ' solid 4px'}" >{{u.nick}}</div>
                 </div>
             </td>
-            <td></td>
-            <td></td>
-            <td>
-                <button>变卖资产</button>
+            <td colspan="2">
+                <div class="bottom" v-for="u in users" v-bind:style="{ 'color': u.position != -1 ? u.color : 'grey' }" > {{u.name}} 剩余金钱 {{u
+                    .money}}</div>
             </td>
             <td>
-                <button>发起交易</button>
+                <button v-on:click="sell" >变卖资产</button>
             </td>
             <td>
-                <button>投掷骰子</button>
+                <button v-on:click="transaction" >发起交易</button>
             </td>
             <td>
-                <button>购买/升级</button>
+                <button v-on:click="roll" v-bind:disabled="'init' != status && 'active' != status" >投掷骰子</button>
             </td>
             <td>
-                <button>破产</button>
+                <button v-on:click="upgrade" >购买/盖楼</button>
             </td>
-            <td></td>
+            <td>
+                <button v-on:click="pass" >跳过/破产</button>
+            </td>
+            <td>{{status}}</td>
             <td></td>
             <td v-bind:style="{ color: map[13].color }">
                 <div class="room" v-bind:style="{ 'background-color': map[13].ownerColor }">
@@ -625,12 +622,25 @@
         return (false);
     }
 
+    function getCurrentUser(users, token) {
+        for (var i = 0; i < users.length; i++) {
+            if (token == users[i].token) {
+                return users[i];
+            }
+        }
+    }
+
     var monoData = {map: []}
     $.get({
         url: "/test/maps", success: function (result) {
-            monoData.map = result;
-
-
+            monoData.map = result.map;
+            monoData.users = result.users;
+            monoData.messages = result.messages;
+            var token = getQueryVariable("token")
+            var status = getCurrentUser(result.users, token).status;
+            monoData.status = status == null ? 'init' : status;
+            var requestDto = {};
+            requestDto.token = token;
             var vm = new Vue({
                 el: "#app",
                 data: monoData,
@@ -652,7 +662,6 @@
                     initWebSocket: function () {
                         // WebSocket与普通的请求所用协议有所不同，ws等同于http，wss等同于https
                         var domain = location.host
-                        var token = getQueryVariable("token")
                         console.log(domain)
                         console.log(token)
                         this.websock = new WebSocket("ws://" + domain + "/websocket/" + token);
@@ -671,11 +680,35 @@
                         console.log(e)
                         var da = JSON.parse(e.data);
                         monoData.map = da.map;
+                        monoData.users = da.users;
+                        monoData.messages = da.messages;
+                        var status = getCurrentUser(da.users, token).status;
+                        monoData.status = status == null ? 'init' : status;
                         console.log(da);
                         this.message = da;
                     },
                     websocketclose: function (e) {
                         console.log("connection closed (" + e.code + ")");
+                    },
+                    roll: function () {
+                        requestDto.method = 'roll';
+                        this.websock.send(JSON.stringify(requestDto))
+                    },
+                    upgrade: function () {
+                        requestDto.method = 'roll';
+                        this.websock.send(JSON.stringify(requestDto))
+                    },
+                    sell: function () {
+                        requestDto.method = 'sell';
+                        this.websock.send(JSON.stringify(requestDto))
+                    },
+                    transaction: function () {
+                        requestDto.method = 'transaction';
+                        this.websock.send(JSON.stringify(requestDto))
+                    },
+                    pass: function () {
+                        requestDto.method = 'pass';
+                        this.websock.send(JSON.stringify(requestDto))
                     }
                 }
             })

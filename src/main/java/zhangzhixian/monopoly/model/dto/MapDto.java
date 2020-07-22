@@ -15,4 +15,7 @@ public class MapDto {
 
     private List<User> users;
 
+    private List<String> messages;
+
 }
+

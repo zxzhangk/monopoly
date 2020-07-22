@@ -11,6 +11,8 @@ import java.util.List;
 @ConfigurationProperties(prefix = "customize")
 public class CustomizeConfiguration {
 
+    private int initMoney;
+
     private List<Grid> maps;
 
     private List<User> users;

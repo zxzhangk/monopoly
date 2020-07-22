@@ -33,8 +33,8 @@ public class TestController {
         return mainService.getMap();
     }
     @RequestMapping("/maps")
-    public List<Grid> listMaps() {
-        return mainService.getMap().getMap();
+    public MapDto listMaps() {
+        return mainService.getMap();
     }
 
     @RequestMapping("/test")

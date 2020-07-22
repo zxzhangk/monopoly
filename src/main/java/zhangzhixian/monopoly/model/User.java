@@ -18,4 +18,6 @@ public class User {
 
     private int position = -1;
 
+    private int money;
+
 }

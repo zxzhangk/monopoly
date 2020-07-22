@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import zhangzhixian.monopoly.configuration.SpringContext;
 import zhangzhixian.monopoly.model.User;
+import zhangzhixian.monopoly.model.dto.RequestDTO;
 import zhangzhixian.monopoly.service.MainService;
 
 import javax.websocket.OnClose;
@@ -56,7 +57,8 @@ public class WebSocket {
         this.session = session;
         webSockets.add(this);
         sessionPool.put(token, session);
-        sendAllMessage(JSONObject.toJSONString(mainService.getMap()));
+        mainService.addMessage(String.format("%s 加入游戏", user.getName()));
+        sendAllMessage(JSONObject.toJSON(mainService.getMap()).toString());
         log.info("【websocket消息】有新的连接，总数为:" + webSockets.size());
     }
 
@@ -77,7 +79,29 @@ public class WebSocket {
 
     @OnMessage
     public void onMessage(String message) {
-        System.out.println("【websocket消息】收到客户端消息:"+message);
+        log.info("【websocket消息】收到客户端消息:{}", message);
+        RequestDTO requestDTO = JSONObject.parseObject(message, RequestDTO.class);
+        switch (requestDTO.getMethod()) {
+            case sell:
+                log.warn("sell");
+                break;
+            case transaction:
+                log.warn("transaction");
+                break;
+            case pass:
+                log.warn("pass");
+                break;
+            case roll:
+                mainService.roll(requestDTO);
+                sendAllMessage(JSONObject.toJSON(mainService.getMap()).toString());
+                break;
+            case upgrade:
+                log.warn("upgrade");
+                break;
+            default:
+                log.warn("todo");
+                break;
+        }
     }
 
     // 此为广播消息

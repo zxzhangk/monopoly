@@ -12,12 +12,21 @@ customize:
   users:
     - name: 寂弦
       nick: 弦
-      color: brown
+      color: cornflowerblue
       token: xxx1
     - name: 钻头
       nick: 钻
-      color: green
+      color: darkslategray
       token: xxx2
+
+    - name: 屈屈
+      nick: 屈
+      color: burlywood
+      token: xxx3
+    - name: 玉婷
+      nick: 婷
+      color: indianred
+      token: xxx4
   maps:
     - name: 起点
       type: start
@@ -25,7 +34,8 @@ customize:
     - name: 中山北路
       type: estate
       color: pink
-      price: 200
+      price: 600
+      detail: 20,100,300,900,1600,2500,500
 
     - name: 欢乐卡
       type: happy
@@ -34,6 +44,7 @@ customize:
       type: estate
       color: pink
       price: 600
+      detail: 40,200,600,1800,3200,4500,500
 
     - name: 所得税
       type: tax
@@ -42,11 +53,13 @@ customize:
     - name: 人民广场车站
       type: station
       price: 2000
+      detail: 250,500,1000,2000
 
     - name: 交通路
       type: happy
       color: blue
       price: 1000
+      detail: 60,300,900,2700,4000,5500,500
 
     - name: 机会
       type: chance
@@ -55,12 +68,13 @@ customize:
       type: start
       color: blue
       price: 1000
-      detail: 60,300,900,2700,4000,5500,500,500
+      detail: 60,300,900,2700,4000,5500,500
 
     - name: 金宁东路
       type: estate
       color: blue
       price: 1200
+      detail: 80,400,1000,3000,4500,6000,500
 
     - name: 坐牢/路过
       type: other
@@ -69,6 +83,7 @@ customize:
       type: estate
       color: darkblue
       price: 1400
+      detail: 100,500,1500,4000,6250,7500,1000
 
     - name: 电力公司
       type: livelihood
@@ -78,20 +93,24 @@ customize:
       type: estate
       color: darkblue
       price: 1400
+      detail: 100,500,1500,4000,6250,7500,1000
 
     - name: 浦东南路
       type: estate
       color: darkblue
       price: 1600
+      detail: 120,600,1800,5000,7000,9000,1000
 
     - name: 徐家汇车站
       type: station
       price: 2000
+      detail: 250,500,1000,2000
 
     - name: 恒丰路
       type: estate
       color: orange
       price: 1800
+      detail: 140,700,2000,5500,7500,9500,1000
 
     - name: 命运
       type: destiny
@@ -100,11 +119,13 @@ customize:
       type: estate
       color: orange
       price: 1800
+      detail: 140,700,2000,5500,7500,9500,1000
 
     - name: 西藏中路
       type: estate
       color: orange
       price: 2000
+      detail: 160,800,2200,6000,8000,10000,1000
 
     - name: 免费停车场
       type: other
@@ -113,6 +134,7 @@ customize:
       type: estate
       color: red
       price: 2200
+      detail: 180,900,2500,7000,8750,10500,1500
 
     - name: 机会
       type: chance
@@ -121,25 +143,30 @@ customize:
       type: estate
       color: red
       price: 2200
+      detail: 180,900,2500,7000,8750,10500,1500
 
     - name: 天目路
       type: estate
       color: red
       price: 2400
+      detail: 200,1000,3000,7500,9250,11000,1500
 
     - name: 汉中车站
       type: station
       price: 2000
+      detail: 250,500,1000,2000
 
     - name: 长寿路
       type: estate
       color: chocolate
       price: 2600
+      detail: 220,1100,3300,8000,9750,11500,1500
 
     - name: 延安西路
       type: estate
       color: chocolate
       price: 2600
+      detail: 220,1100,3300,8000,9750,11500,1500
 
     - name: 自来水厂
       type: livelihood
@@ -149,6 +176,7 @@ customize:
       type: estate
       color: chocolate
       price: 2600
+      detail: 220,1100,3300,8000,9750,11500,1500
 
     - name: 进牢
       type: prison
@@ -157,11 +185,13 @@ customize:
       type: estate
       color: green
       price: 3000
+      detail: 260,1300,3900,9000,11000,12750,2000
 
     - name: 复兴中路
       type: estate
       color: green
       price: 3000
+      detail: 260,1300,3900,9000,11000,12750,2000
 
     - name: 命运
       type: destiny
@@ -170,10 +200,12 @@ customize:
       type: estate
       color: green
       price: 3200
+      detail: 280,1500,4500,10000,12000,14000,2000
 
     - name: 上海车站
       type: station
       price: 2000
+      detail: 250,500,1000,2000
 
     - name: 机会
       type: chance
@@ -182,6 +214,7 @@ customize:
       type: estate
       color: darkslategray
       price: 3500
+      detail: 350,1750,5000,11000,13000,15000,1750
 
     - name: 所得税
       type: tax
@@ -191,3 +224,4 @@ customize:
       type: estate
       color: darkslategray
       price: 4000
+      detail: 500,2000,6000,14000,17000,20000,2000

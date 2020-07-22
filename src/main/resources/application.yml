@@ -220,7 +220,7 @@ customize:
 
     - name: 所得税
       type: tax
-      price: 2000
+      price: 1000
 
     - name: 北京东路
       type: estate

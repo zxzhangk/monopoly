@@ -82,6 +82,8 @@ public class MainServiceImpl implements MainService {
             int num = rollNum();
             if (user.getPosition() + num >= map.size()) {
                 user.setPosition(user.getPosition() + num - map.size());
+                user.setMoney(user.getMoney() + 2000);
+                addMessage(String.format("%s 经过起点，得2000", user.getName()));
             } else {
                 user.setPosition(user.getPosition() + num);
             }
@@ -89,16 +91,15 @@ public class MainServiceImpl implements MainService {
             Grid grid = map.get(user.getPosition());
             addMessage(String.format("%s 骰子点数为 %s, 前进 %s 步，到达 %s", user.getName(), num, num, grid.getName()));
             switch (grid.getType()) {
-                case start:
-                    user.setMoney(user.getMoney() + 2000);
-                    nextUser(user, StatusEnum.waiting);
-                    break;
                 case tax:
                     user.setMoney(user.getMoney() - grid.getPrice());
                     nextUser(user, StatusEnum.waiting);
+                    addMessage(String.format("%s 扣税 %s", user.getName(), grid.getPrice()));
                     break;
                 case prison:
+                    user.setPosition(10);
                     nextUser(user, StatusEnum.jailed);
+                    addMessage(String.format("%s 进监狱了", user.getName()));
                     break;
                 default:
                     nextUser(user, StatusEnum.waiting);
@@ -134,6 +135,7 @@ public class MainServiceImpl implements MainService {
             } else {
                 // 出狱
                 current.user.setStatus(StatusEnum.waiting);
+                addMessage(String.format("%s 出狱了", current.user.getName()));
             }
 
         }

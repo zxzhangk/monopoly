@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Stream;
 
 @Service
 public class MainServiceImpl implements MainService {
@@ -93,13 +94,16 @@ public class MainServiceImpl implements MainService {
             switch (grid.getType()) {
                 case tax:
                     user.setMoney(user.getMoney() - grid.getPrice());
-                    nextUser(user, StatusEnum.waiting);
                     addMessage(String.format("%s 扣税 %s", user.getName(), grid.getPrice()));
+                    nextUser(user, StatusEnum.waiting);
                     break;
                 case prison:
                     user.setPosition(10);
-                    nextUser(user, StatusEnum.jailed);
                     addMessage(String.format("%s 进监狱了", user.getName()));
+                    nextUser(user, StatusEnum.jailed);
+                    break;
+                case estate:
+                    getToEstate(user, grid);
                     break;
                 default:
                     nextUser(user, StatusEnum.waiting);
@@ -108,7 +112,106 @@ public class MainServiceImpl implements MainService {
         }
     }
 
+    @Override
+    public void pass(RequestDTO requestDTO) {
+        String token = requestDTO.getToken();
+        User user = users.stream().filter(u -> StringUtils.equals(u.getToken(), token)).findAny().orElse(null);
+        if (Objects.isNull(user)) {
+            return;
+        }
+        // 用户金钱为负 破产
+        if (user.getMoney() < 0) {
+            map.stream().filter(grid -> StringUtils.equals(user.getToken(), grid.getOwner())).forEach(grid -> {
+                grid.setRoomLevel(0);
+                grid.setOwner(null);
+                grid.setOwnerColor("white");
+            });
+            nextUser(user, StatusEnum.broke);
+            addMessage(String.format("%s破产了", user.getName()));
+        } else {
+            nextUser(user, StatusEnum.waiting);
+        }
+
+    }
+
+    @Override
+    public void upgrade(RequestDTO requestDTO) {
+        String token = requestDTO.getToken();
+        User user = users.stream().filter(u -> StringUtils.equals(u.getToken(), token)).findAny().orElse(null);
+        if (Objects.isNull(user)) {
+            return;
+        }
+        Grid grid = map.get(user.getPosition());
+        int cost = grid.getPrice();
+        // 买地
+        if (Objects.nonNull(grid.getOwner())) {
+            cost = grid.getDetail().get(6);
+        }
+        if (user.getMoney() < cost) {
+            addMessage(String.format("%s剩余金钱%s，不足%s", user.getName(), user.getMoney(), cost));
+            return;
+        }
+        if (Objects.isNull(grid.getOwner())) {
+            user.setMoney(user.getMoney() - cost);
+            grid.setOwnerColor(user.getColor());
+            grid.setOwner(user.getToken());
+            addMessage(String.format("%s花费%s购买了%s", user.getName(), cost, grid.getName()));
+        } else {
+            user.setMoney(user.getMoney() - cost);
+            grid.setRoomLevel(grid.getRoomLevel() + 1);
+            addMessage(String.format("%s花费%s在%s盖了一栋房子", user.getName(), cost, grid.getName()));
+        }
+        nextUser(user, StatusEnum.waiting);
+    }
+
+    private void getToEstate(User user, Grid grid) {
+        // 无主，可购买
+        if (Objects.isNull(grid.getOwner())) {
+            user.setStatus(StatusEnum.active_estate);
+            addMessage(String.format("%s地价%s，是否购买？", grid.getName(), grid.getPrice()));
+            return;
+        }
+        // 有主，别人的，扣钱
+        else if (!StringUtils.equals(grid.getOwner(), user.getToken())) {
+            Integer cost = grid.getDetail().get(grid.getRoomLevel());
+            User tempUser = users.stream().filter(u -> StringUtils.equals(u.getToken(), grid.getOwner())).findAny().orElse(null);
+            assert tempUser != null;
+            // 如果对方在监狱，不扣钱
+            if (tempUser.getStatus() == StatusEnum.jailed) {
+                addMessage(String.format("%s在监狱里，%s不用付钱", tempUser.getName(), user.getName()));
+                nextUser(user, StatusEnum.waiting);
+                return;
+            }
+            // 检查是不是集齐了颜色
+            if (grid.getRoomLevel() == 0
+                    && map.stream().filter(g -> StringUtils.equals(g.getColor(), grid.getColor()))
+                    .allMatch(g -> StringUtils.equals(g.getOwner(), grid.getOwner()))) {
+                cost = cost * 2;
+            }
+            user.setMoney(user.getMoney() - cost);
+            tempUser.setMoney(tempUser.getMoney() + cost);
+            addMessage(String.format("%s付%s给%s", user.getName(), cost, tempUser.getName()));
+            nextUser(user, StatusEnum.waiting);
+        } else {
+            // 有主 自己的 可升级
+            if (grid.getRoomLevel() == 5) {
+                // 最高级了 跳过
+                nextUser(user, StatusEnum.waiting);
+                return;
+            }
+            user.setStatus(StatusEnum.active_estate);
+            addMessage(String.format("%s当前有%s个房子，是否再买一栋", grid.getName(), grid.getRoomLevel()));
+        }
+
+    }
+
     private void nextUser(User user, StatusEnum status) {
+        // 如果用户的钱为负，不转移，状态变为资金不足，等待用户处理
+        if (user.getMoney() < 0 && status != StatusEnum.broke) {
+            user.setStatus(StatusEnum.active_insufficient);
+            addMessage(String.format("%s 钱不够了，变卖家产吧", user.getName()));
+            return;
+        }
         user.setStatus(status);
         Node node = new Node();
         Node head = node;
@@ -117,15 +220,19 @@ public class MainServiceImpl implements MainService {
             User tempUser = users.get(i);
             if (i == 0) {
                 node.user = tempUser;
+            } else {
+                node.next = new Node();
+                node.next.user = tempUser;
+                node = node.next;
             }
-            node.next = new Node();
-            node.next.user = tempUser;
-            node = node.next;
             if (StringUtils.equals(tempUser.getToken(), user.getToken())) {
                 current = node;
             }
         }
         node.next = head;
+        if (user.getStatus() == StatusEnum.broke) {
+            users.remove(user);
+        }
         while (true) {
             assert current != null;
             current = current.next;
@@ -140,6 +247,8 @@ public class MainServiceImpl implements MainService {
 
         }
     }
+
+
 
     private int rollNum() {
         return random.nextInt(12) + 1;

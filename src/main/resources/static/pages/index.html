@@ -280,11 +280,10 @@
                 </div>
             </td>
             <td colspan="2">
-                <div class="bottom" v-for="u in users" v-bind:style="{ 'color': u.position != -1 ? u.color : 'grey' }" > {{u.name}} 剩余金钱 {{u
-                    .money}}</div>
+                <div class="bottom" v-for="u in users" v-bind:style="{ 'color': u.position != -1 ? u.color : 'grey' }" > {{u.name}} 剩余金钱 {{u.money}}</div>
             </td>
             <td>
-                <button v-on:click="sell" >变卖资产</button>
+                <button v-on:click="sell" v-bind:disabled="'active_estate' != status && 'active_insufficient' != status " >变卖资产</button>
             </td>
             <td>
                 <button v-on:click="transaction" >发起交易</button>
@@ -293,10 +292,10 @@
                 <button v-on:click="roll" v-bind:disabled="'init' != status && 'active' != status" >投掷骰子</button>
             </td>
             <td>
-                <button v-on:click="upgrade" >购买/盖楼</button>
+                <button v-on:click="upgrade" v-bind:disabled="'active_estate' != status " >购买/盖楼</button>
             </td>
             <td>
-                <button v-on:click="pass" >跳过/破产</button>
+                <button v-on:click="pass" v-bind:disabled="'active_estate' != status && 'active_insufficient' != status " >跳过/破产</button>
             </td>
             <td>{{status}}</td>
             <td></td>
@@ -695,7 +694,7 @@
                         this.websock.send(JSON.stringify(requestDto))
                     },
                     upgrade: function () {
-                        requestDto.method = 'roll';
+                        requestDto.method = 'upgrade';
                         this.websock.send(JSON.stringify(requestDto))
                     },
                     sell: function () {

@@ -14,6 +14,10 @@ public interface MainService {
 
     void roll(RequestDTO requestDTO);
 
+    void pass(RequestDTO requestDTO);
+
+    void upgrade(RequestDTO requestDTO);
+
     void addMessage(String message);
 
 }

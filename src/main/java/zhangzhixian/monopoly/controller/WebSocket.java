@@ -78,7 +78,7 @@ public class WebSocket {
     }
 
     @OnMessage
-    public void onMessage(String message) {
+    public synchronized void onMessage(String message) {
         log.info("【websocket消息】收到客户端消息:{}", message);
         RequestDTO requestDTO = JSONObject.parseObject(message, RequestDTO.class);
         switch (requestDTO.getMethod()) {
@@ -89,14 +89,16 @@ public class WebSocket {
                 log.warn("transaction");
                 break;
             case pass:
-                log.warn("pass");
+                mainService.pass(requestDTO);
+                sendAllMessage(JSONObject.toJSON(mainService.getMap()).toString());
                 break;
             case roll:
                 mainService.roll(requestDTO);
                 sendAllMessage(JSONObject.toJSON(mainService.getMap()).toString());
                 break;
             case upgrade:
-                log.warn("upgrade");
+                mainService.upgrade(requestDTO);
+                sendAllMessage(JSONObject.toJSON(mainService.getMap()).toString());
                 break;
             default:
                 log.warn("todo");

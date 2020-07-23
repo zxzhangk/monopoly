@@ -58,7 +58,7 @@ customize:
       detail: 250,500,1000,2000
 
     - name: 交通路
-      type: happy
+      type: estate
       color: blue
       price: 1000
       detail: 60,300,900,2700,4000,5500,500
@@ -67,7 +67,7 @@ customize:
       type: chance
 
     - name: 四川北路
-      type: start
+      type: estate
       color: blue
       price: 1000
       detail: 60,300,900,2700,4000,5500,500

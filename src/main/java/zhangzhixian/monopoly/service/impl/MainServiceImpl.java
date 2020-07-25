@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import zhangzhixian.monopoly.configuration.CustomizeConfiguration;
 import zhangzhixian.monopoly.enums.GridEnum;
 import zhangzhixian.monopoly.enums.StatusEnum;
+import zhangzhixian.monopoly.model.Card;
 import zhangzhixian.monopoly.model.Grid;
 import zhangzhixian.monopoly.model.User;
 import zhangzhixian.monopoly.model.dto.MapDto;
@@ -113,11 +114,66 @@ public class MainServiceImpl implements MainService {
                 case livelihood:
                     getToEstate(user, grid, num);
                     break;
+                case chance:
+                    getToChance(user, grid);
                 default:
                     nextUser(user, StatusEnum.waiting);
                     break;
             }
         }
+    }
+
+    private void getToChance(User user, Grid grid) {
+        int i = random.nextInt(configuration.getChances().size());
+        Card card = configuration.getChances().get(i);
+        addMessage(user.getName() + " " + card.getName());
+        switch (card.getType()) {
+            case cost:
+                user.setMoney(user.getMoney() - card.getPrice());
+                break;
+            case gain:
+                user.setMoney(user.getMoney() + card.getPrice());
+                break;
+            case gainFromOther:
+                user.setMoney(user.getMoney() + (users.size() - 1) * card.getPrice());
+                users.forEach(u -> {
+                    if (!u.getToken().equals(user.getToken())) {
+                        u.setMoney(u.getMoney() - card.getPrice());
+                        addMessage(String.format("%s失去%s元", u.getName(), card.getPrice()));
+                    }
+                });
+                break;
+            case costTogether:
+                users.forEach(u -> {
+                    u.setMoney(u.getMoney() - card.getPrice());
+                    addMessage(String.format("%s失去%s元", u.getName(), card.getPrice()));
+                });
+                break;
+            case houseDuty:
+                int sum = map.stream().filter(g -> StringUtils.equals(g.getOwner(), user.getToken()))
+                        .filter(g -> g.getType() == GridEnum.estate).mapToInt(g -> {
+                            if (g.getRoomLevel() == 0) {
+                                return 0;
+                            } else if (g.getRoomLevel() < 5) {
+                                return g.getRoomLevel() * card.getPrice();
+                            } else {
+                                return card.getHotelPrice();
+                            }
+                        }).sum();
+                user.setMoney(user.getMoney() - sum);
+                addMessage(String.format("%s失去%s元", user.getName(), sum));
+                break;
+            case impunity:
+                // TODO
+                break;
+            case jailed:
+                user.setPosition(10);
+                nextUser(user, StatusEnum.jailed);
+                return;
+            default:
+                break;
+        }
+        nextUser(user, StatusEnum.waiting);
     }
 
 

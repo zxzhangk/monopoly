@@ -373,7 +373,7 @@
                                 卖房</button>
                         </td>
                         <td style="height: 50px">
-                            <button v-bind:disabled="'active_selling' != status || item.roomLevel != 0"
+                            <button v-bind:disabled="'active_selling' != status || (item.roomLevel != 0 && item.type == estate)"
                                     v-on:click="sell('estate', item.name)">
                                 卖地</button>
                         </td>

@@ -227,3 +227,54 @@ customize:
       color: darkslategray
       price: 4000
       detail: 500,2000,6000,14000,17000,20000,2000
+  chances:
+    - name: 与木乃伊合照冲洗相片，费用300
+      type: cost
+      price: 300
+    - name: 当棉被一条，得500
+      type: gain
+      price: 500
+    - name: 出狱许可证
+      type: impunity
+      price: 0
+    - name: 选美会获亚军，得1000
+      type: gain
+      price: 1000
+    - name: 这是你的生日，向每人收取礼金1000
+      type: gainFromOther
+      price: 1000
+    - name: 得美国华盛顿大学奖学金2000
+      type: gain
+      price: 2000
+    - name: 拘票，立刻坐牢
+      type: jailed
+      price: 0
+    - name: 小偷光顾，损失500
+      type: cost
+      price: 500
+    - name: 敬军爱国，捐款1000
+      type: cost
+      price: 1000
+    - name: 付产科医院1000
+      type: cost
+      price: 1000
+    - name: 工作努力得奖金500
+      type: gain
+      price: 500
+    - name: 整修自己所有房屋，房屋每栋250，旅馆每栋1000
+      type: houseDuty
+      price: 250
+      hotelPrice: 1000
+    - name: 卖黄牛票，罚款1000
+      type: cost
+      price: 1000
+    - name: 付保险费500
+      type: cost
+      price: 500
+    - name: 中爱国奖券五奖得2000
+      type: gain
+      price: 2000
+    - name: 路不拾遗失主酬劳得1000
+      type: gain
+      price: 1000
+

@@ -60,6 +60,19 @@
         margin-left: 3px;
     }
 
+    .detail {
+        margin: 5% 5% 130%;
+        width: 90%;
+        text-align: center;
+    }
+    .detail_top {
+        height: 50px;
+        color: white;
+        line-height: 50px;
+        font-weight: bolder;
+        font-size: larger;
+    }
+
     embed {
         width: 24px;
         height: 24px;
@@ -93,7 +106,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[1].ownerColor }">
                     <embed v-for="n in map[1].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info"  v-on:click="showDetail(map[1])">
                     {{map[1].name}}<br>
                     {{map[1].price}}
                 </div>
@@ -117,7 +130,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[3].ownerColor }">
                     <embed v-for="n in map[3].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[3])">
                     {{map[3].name}}<br>
                     {{map[3].price}}
                 </div>
@@ -154,7 +167,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[6].ownerColor }">
                     <embed v-for="n in map[6].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[6])">
                     {{map[6].name}}<br>
                     {{map[6].price}}
                 </div>
@@ -178,7 +191,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[8].ownerColor }">
                     <embed v-for="n in map[8].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[8])">
                     {{map[8].name}}<br>
                     {{map[8].price}}
                 </div>
@@ -190,7 +203,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[9].ownerColor }">
                     <embed v-for="n in map[9].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[9])">
                     {{map[9].name}}<br>
                     {{map[9].price}}
                 </div>
@@ -216,7 +229,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[39].ownerColor }">
                     <embed v-for="n in map[39].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[39])">
                     {{map[39].name}}<br>
                     {{map[39].price}}
                 </div>
@@ -231,7 +244,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[11].ownerColor }">
                     <embed v-for="n in map[11].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[11])">
                     {{map[11].name}}<br>
                     {{map[11].price}}
                 </div>
@@ -271,7 +284,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[37].ownerColor }">
                     <embed v-for="n in map[37].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[37])">
                     {{map[37].name}}<br>
                     {{map[37].price}}
                 </div>
@@ -303,7 +316,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[13].ownerColor }">
                     <embed v-for="n in map[13].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[13])">
                     {{map[13].name}}<br>
                     {{map[13].price}}
                 </div>
@@ -325,12 +338,25 @@
                     <div class="user" v-for="u in map[36].users" v-bind:style="{'border': u.color + ' solid 4px'}" >{{u.nick}}</div>
                 </div>
             </td>
-            <td rowspan="6" colspan="9"></td>
+            <td rowspan="6" colspan="2">
+                <div class="detail" v-if="show">
+                    <div class="detail_top" v-bind:style="{'background-color': show.color }">{{show.name}}</div>
+                    <table>
+                        <tr v-for="(item,index) in show.detail">
+                            <td style="height: 50px" v-if="index == 0 && show.type == 'estate'">空地</td>
+                            <td style="height: 50px" v-if="index != 0 && index != 6 && show.type == 'estate'">{{index}}栋房屋</td>
+                            <td style="height: 50px" v-if="index == 6 && show.type == 'estate'">空地抵押价格</td>
+                            <td style="height: 50px">{{item}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+            <td rowspan="6" colspan="7"></td>
             <td v-bind:style="{ color: map[14].color }">
                 <div class="room" v-bind:style="{ 'background-color': map[14].ownerColor }">
                     <embed v-for="n in map[14].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[14])">
                     {{map[14].name}}<br>
                     {{map[14].price}}
                 </div>
@@ -370,7 +396,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[34].ownerColor }">
                     <embed v-for="n in map[34].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[34])">
                     {{map[34].name}}<br>
                     {{map[34].price}}
                 </div>
@@ -382,7 +408,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[16].ownerColor }">
                     <embed v-for="n in map[16].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[16])">
                     {{map[16].name}}<br>
                     {{map[16].price}}
                 </div>
@@ -422,7 +448,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[32].ownerColor }">
                     <embed v-for="n in map[32].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[32])">
                     {{map[32].name}}<br>
                     {{map[32].price}}
                 </div>
@@ -434,7 +460,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[18].ownerColor }">
                     <embed v-for="n in map[18].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[18])">
                     {{map[18].name}}<br>
                     {{map[18].price}}
                 </div>
@@ -448,7 +474,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[31].ownerColor }">
                     <embed v-for="n in map[31].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[31])">
                     {{map[31].name}}<br>
                     {{map[31].price}}
                 </div>
@@ -461,7 +487,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[19].ownerColor }">
                     <embed v-for="n in map[19].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[19])">
                     {{map[19].name}}<br>
                     {{map[19].price}}
                 </div>
@@ -488,7 +514,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[29].ownerColor }">
                     <embed v-for="n in map[29].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[29])">
                     {{map[29].name}}<br>
                     {{map[29].price}}
                 </div>
@@ -512,7 +538,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[27].ownerColor }">
                     <embed v-for="n in map[27].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[27])">
                     {{map[27].name}}<br>
                     {{map[27].price}}
                 </div>
@@ -524,7 +550,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[26].ownerColor }">
                     <embed v-for="n in map[26].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[26])">
                     {{map[26].name}}<br>
                     {{map[26].price}}
                 </div>
@@ -548,7 +574,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[24].ownerColor }">
                     <embed v-for="n in map[24].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[24])">
                     {{map[24].name}}<br>
                     {{map[24].price}}
                 </div>
@@ -560,7 +586,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[23].ownerColor }">
                     <embed v-for="n in map[23].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[23])">
                     {{map[23].name}}<br>
                     {{map[23].price}}
                 </div>
@@ -584,7 +610,7 @@
                 <div class="room" v-bind:style="{ 'background-color': map[21].ownerColor }">
                     <embed v-for="n in map[21].roomLevel" src="/room.svg" type="image/svg+xml"/>
                 </div>
-                <div class="info">
+                <div class="info" v-on:click="showDetail(map[21])">
                     {{map[21].name}}<br>
                     {{map[21].price}}
                 </div>
@@ -634,6 +660,7 @@
         url: "/test/maps", success: function (result) {
             monoData.map = result.map;
             monoData.users = result.users;
+            monoData.show = null;
             monoData.messages = result.messages;
             var token = getQueryVariable("token")
             var status = getCurrentUser(result.users, token).status;
@@ -687,6 +714,7 @@
                         this.message = da;
                     },
                     websocketclose: function (e) {
+                        alert("连接终端，请刷新")
                         console.log("connection closed (" + e.code + ")");
                     },
                     roll: function () {
@@ -708,6 +736,10 @@
                     pass: function () {
                         requestDto.method = 'pass';
                         this.websock.send(JSON.stringify(requestDto))
+                    },
+                    showDetail: function (show) {
+                        monoData.show = show;
+                        console.log(show)
                     }
                 }
             })

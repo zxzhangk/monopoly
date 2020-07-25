@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import zhangzhixian.monopoly.configuration.CustomizeConfiguration;
+import zhangzhixian.monopoly.enums.GridEnum;
 import zhangzhixian.monopoly.enums.StatusEnum;
 import zhangzhixian.monopoly.model.Grid;
 import zhangzhixian.monopoly.model.User;
@@ -16,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -103,7 +105,9 @@ public class MainServiceImpl implements MainService {
                     nextUser(user, StatusEnum.jailed);
                     break;
                 case estate:
-                    getToEstate(user, grid);
+                case station:
+                case livelihood:
+                    getToEstate(user, grid, num);
                     break;
                 default:
                     nextUser(user, StatusEnum.waiting);
@@ -111,6 +115,7 @@ public class MainServiceImpl implements MainService {
             }
         }
     }
+
 
     @Override
     public void pass(RequestDTO requestDTO) {
@@ -145,7 +150,7 @@ public class MainServiceImpl implements MainService {
         int cost = grid.getPrice();
         // 买地
         if (Objects.nonNull(grid.getOwner())) {
-            cost = grid.getDetail().get(6);
+            cost = grid.getType() == GridEnum.estate ? grid.getDetail().get(6) : 0;
         }
         if (user.getMoney() < cost) {
             addMessage(String.format("%s剩余金钱%s，不足%s", user.getName(), user.getMoney(), cost));
@@ -155,6 +160,11 @@ public class MainServiceImpl implements MainService {
             user.setMoney(user.getMoney() - cost);
             grid.setOwnerColor(user.getColor());
             grid.setOwner(user.getToken());
+            if (grid.getType() == GridEnum.station) {
+                List<Grid> station = map.stream().filter(g -> g.getType() == GridEnum.station)
+                        .filter(g -> StringUtils.equals(g.getOwner(), token)).collect(Collectors.toList());
+                station.forEach(s -> s.setRoomLevel(station.size() - 1));
+            }
             addMessage(String.format("%s花费%s购买了%s", user.getName(), cost, grid.getName()));
         } else {
             user.setMoney(user.getMoney() - cost);
@@ -164,16 +174,21 @@ public class MainServiceImpl implements MainService {
         nextUser(user, StatusEnum.waiting);
     }
 
-    private void getToEstate(User user, Grid grid) {
+    private void getToEstate(User user, Grid grid, int num) {
         // 无主，可购买
         if (Objects.isNull(grid.getOwner())) {
             user.setStatus(StatusEnum.active_estate);
             addMessage(String.format("%s地价%s，是否购买？", grid.getName(), grid.getPrice()));
-            return;
         }
         // 有主，别人的，扣钱
         else if (!StringUtils.equals(grid.getOwner(), user.getToken())) {
-            Integer cost = grid.getDetail().get(grid.getRoomLevel());
+            int cost = 0;
+            if (grid.getType() == GridEnum.livelihood) {
+                cost = map.stream().filter(g -> g.getType() == GridEnum.livelihood)
+                        .allMatch(g -> StringUtils.equals(g.getOwner(), user.getToken())) ? num * 100 : num * 10;
+            } else {
+                cost = grid.getDetail().get(grid.getRoomLevel());
+            }
             User tempUser = users.stream().filter(u -> StringUtils.equals(u.getToken(), grid.getOwner())).findAny().orElse(null);
             assert tempUser != null;
             // 如果对方在监狱，不扣钱
@@ -183,7 +198,7 @@ public class MainServiceImpl implements MainService {
                 return;
             }
             // 检查是不是集齐了颜色
-            if (grid.getRoomLevel() == 0
+            if (grid.getType() == GridEnum.estate && grid.getRoomLevel() == 0
                     && map.stream().filter(g -> StringUtils.equals(g.getColor(), grid.getColor()))
                     .allMatch(g -> StringUtils.equals(g.getOwner(), grid.getOwner()))) {
                 cost = cost * 2;
@@ -194,7 +209,7 @@ public class MainServiceImpl implements MainService {
             nextUser(user, StatusEnum.waiting);
         } else {
             // 有主 自己的 可升级
-            if (grid.getRoomLevel() == 5) {
+            if (grid.getRoomLevel() == 5 || grid.getType() == GridEnum.station || grid.getType() == GridEnum.livelihood) {
                 // 最高级了 跳过
                 nextUser(user, StatusEnum.waiting);
                 return;
@@ -251,7 +266,7 @@ public class MainServiceImpl implements MainService {
 
 
     private int rollNum() {
-        return random.nextInt(12) + 1;
+        return random.nextInt(13);
     }
 
     @Override

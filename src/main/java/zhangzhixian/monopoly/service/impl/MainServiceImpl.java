@@ -13,6 +13,8 @@ import zhangzhixian.monopoly.model.dto.RequestDTO;
 import zhangzhixian.monopoly.service.MainService;
 
 import javax.annotation.PostConstruct;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -27,6 +29,8 @@ public class MainServiceImpl implements MainService {
     private CustomizeConfiguration configuration;
 
     private List<Grid> map;
+
+    private List<Grid> asset;
 
     private List<User> users;
 
@@ -53,7 +57,7 @@ public class MainServiceImpl implements MainService {
                 map.get(u.getPosition()).getUsers().add(u);
             }
         });
-        return MapDto.builder().map(map).users(users).messages(messageList).build();
+        return MapDto.builder().map(map).users(users).asset(asset).messages(messageList).build();
     }
 
     @Override
@@ -119,6 +123,7 @@ public class MainServiceImpl implements MainService {
 
     @Override
     public void pass(RequestDTO requestDTO) {
+        asset = Collections.emptyList();
         String token = requestDTO.getToken();
         User user = users.stream().filter(u -> StringUtils.equals(u.getToken(), token)).findAny().orElse(null);
         if (Objects.isNull(user)) {
@@ -146,6 +151,7 @@ public class MainServiceImpl implements MainService {
         if (Objects.isNull(user)) {
             return;
         }
+        asset = Collections.emptyList();
         Grid grid = map.get(user.getPosition());
         int cost = grid.getPrice();
         // 买地
@@ -172,6 +178,23 @@ public class MainServiceImpl implements MainService {
             addMessage(String.format("%s花费%s在%s盖了一栋房子", user.getName(), cost, grid.getName()));
         }
         nextUser(user, StatusEnum.waiting);
+    }
+
+    @Override
+    public void sell(RequestDTO requestDTO) {
+        // 返回当前用户可以变卖的地产
+        String token = requestDTO.getToken();
+        User user = users.stream().filter(u -> StringUtils.equals(u.getToken(), token)).findAny().orElse(null);
+        if (Objects.isNull(user)) {
+            return;
+        }
+        List<Grid> collect = map.stream().filter(g -> StringUtils.equals(g.getOwner(), user.getToken()))
+                .sorted(Comparator.comparing(Grid::getType)).collect(Collectors.toList());
+        if (collect.isEmpty()) {
+            addMessage(String.format("%s没有可以变卖的资产", user.getName()));
+        }
+        user.setStatus(StatusEnum.active_selling);
+        this.asset = collect;
     }
 
     private void getToEstate(User user, Grid grid, int num) {

@@ -299,16 +299,17 @@
                 <button v-on:click="sell" v-bind:disabled="'active_estate' != status && 'active_insufficient' != status " >变卖资产</button>
             </td>
             <td>
-                <button v-on:click="transaction" >发起交易</button>
+                <button v-on:click="transaction" v-bind:disabled="'active_estate' != status && 'active_insufficient' != status " >发起交易</button>
             </td>
             <td>
                 <button v-on:click="roll" v-bind:disabled="'init' != status && 'active' != status" >投掷骰子</button>
             </td>
             <td>
-                <button v-on:click="upgrade" v-bind:disabled="'active_estate' != status " >购买/盖楼</button>
+                <button v-on:click="upgrade" v-bind:disabled="'active_estate' != status && 'active_selling' != status" >购买/盖楼</button>
             </td>
             <td>
-                <button v-on:click="pass" v-bind:disabled="'active_estate' != status && 'active_insufficient' != status " >跳过/破产</button>
+                <button v-on:click="pass" v-bind:disabled="'active_estate' != status && 'active_insufficient' != status && 'active_selling' != status " >跳过/破产
+                </button>
             </td>
             <td>{{status}}</td>
             <td></td>
@@ -345,13 +346,34 @@
                         <tr v-for="(item,index) in show.detail">
                             <td style="height: 50px" v-if="index == 0 && show.type == 'estate'">空地</td>
                             <td style="height: 50px" v-if="index != 0 && index != 6 && show.type == 'estate'">{{index}}栋房屋</td>
-                            <td style="height: 50px" v-if="index == 6 && show.type == 'estate'">空地抵押价格</td>
+                            <td style="height: 50px" v-if="index == 6 && show.type == 'estate'">房屋建筑费</td>
                             <td style="height: 50px">{{item}}</td>
+                        </tr>
+                        <tr >
+                            <td style="height: 50px" v-if="show.type == 'estate'">空地抵押价格</td>
+                            <td style="height: 50px">{{show.price / 2}}</td>
                         </tr>
                     </table>
                 </div>
             </td>
-            <td rowspan="6" colspan="7"></td>
+            <td rowspan="6" colspan="7">
+                <table style="width: 80%;margin: 10%;height: 80%">
+                    <tr v-for="(item,index) in asset">
+                        <td style="height: 50px">
+                            <div class="detail_top" v-bind:style="{'background-color': item.color ? item.color : 'gray' }">{{item.name}}</div>
+                        </td>
+                        <td style="height: 50px" v-if="item.type == 'estate'">房屋数量：{{item.roomLevel}}</td>
+                        <td style="height: 50px" v-if="item.type == 'estate'">房屋卖价：{{item.detail[6] / 2}}</td>
+                        <td style="height: 50px">空地卖价：{{item.price / 2}}</td>
+                        <td style="height: 50px" v-if="item.type == 'estate'">
+                            <button v-bind:disabled="'active_selling' != status || item.roomLevel == 0 ">卖房</button>
+                        </td>
+                        <td style="height: 50px">
+                            <button v-bind:disabled="'active_selling' != status">卖地</button>
+                        </td>
+                    </tr>
+                </table>
+            </td>
             <td v-bind:style="{ color: map[14].color }">
                 <div class="room" v-bind:style="{ 'background-color': map[14].ownerColor }">
                     <embed v-for="n in map[14].roomLevel" src="/room.svg" type="image/svg+xml"/>
@@ -661,6 +683,7 @@
             monoData.map = result.map;
             monoData.users = result.users;
             monoData.show = null;
+            monoData.asset = null;
             monoData.messages = result.messages;
             var token = getQueryVariable("token")
             var status = getCurrentUser(result.users, token).status;
@@ -708,6 +731,7 @@
                         monoData.map = da.map;
                         monoData.users = da.users;
                         monoData.messages = da.messages;
+                        monoData.asset = da.asset;
                         var status = getCurrentUser(da.users, token).status;
                         monoData.status = status == null ? 'init' : status;
                         console.log(da);

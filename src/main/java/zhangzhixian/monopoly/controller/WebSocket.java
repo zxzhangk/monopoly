@@ -83,27 +83,25 @@ public class WebSocket {
         RequestDTO requestDTO = JSONObject.parseObject(message, RequestDTO.class);
         switch (requestDTO.getMethod()) {
             case sell:
-                log.warn("sell");
+                mainService.sell(requestDTO);
                 break;
             case transaction:
                 log.warn("transaction");
                 break;
             case pass:
                 mainService.pass(requestDTO);
-                sendAllMessage(JSONObject.toJSON(mainService.getMap()).toString());
                 break;
             case roll:
                 mainService.roll(requestDTO);
-                sendAllMessage(JSONObject.toJSON(mainService.getMap()).toString());
                 break;
             case upgrade:
                 mainService.upgrade(requestDTO);
-                sendAllMessage(JSONObject.toJSON(mainService.getMap()).toString());
                 break;
             default:
                 log.warn("todo");
                 break;
         }
+        sendAllMessage(JSONObject.toJSON(mainService.getMap()).toString());
     }
 
     // 此为广播消息

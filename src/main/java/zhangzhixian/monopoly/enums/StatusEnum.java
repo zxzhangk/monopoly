@@ -22,6 +22,11 @@ public enum StatusEnum {
     active_estate,
 
     /**
+     * 变卖地产中
+     */
+    active_selling,
+
+    /**
      * 进监狱
      */
     jailed,

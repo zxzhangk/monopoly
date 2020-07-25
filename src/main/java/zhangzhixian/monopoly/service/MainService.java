@@ -18,6 +18,9 @@ public interface MainService {
 
     void upgrade(RequestDTO requestDTO);
 
+    void sell(RequestDTO requestDTO);
+
     void addMessage(String message);
+
 
 }

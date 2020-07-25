@@ -17,5 +17,7 @@ public class MapDto {
 
     private List<String> messages;
 
+    private List<Grid> asset;
+
 }
 

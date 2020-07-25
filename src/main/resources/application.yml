@@ -216,7 +216,7 @@ customize:
       type: estate
       color: darkslategray
       price: 3500
-      detail: 350,1750,5000,11000,13000,15000,1750
+      detail: 350,1750,5000,11000,13000,15000,2000
 
     - name: 所得税
       type: tax

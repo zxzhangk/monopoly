@@ -10,4 +10,8 @@ public class RequestDTO {
 
     private String token;
 
+    private String sellType;
+
+    private String sellName;
+
 }

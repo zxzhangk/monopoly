@@ -296,7 +296,9 @@
                 <div class="bottom" v-for="u in users" v-bind:style="{ 'color': u.position != -1 ? u.color : 'grey' }" > {{u.name}} 剩余金钱 {{u.money}}</div>
             </td>
             <td>
-                <button v-on:click="sell" v-bind:disabled="'active_estate' != status && 'active_insufficient' != status " >变卖资产</button>
+                <button v-on:click="sell"
+                        v-bind:disabled="'active_estate' != status && 'active_insufficient' != status && 'active_selling' != status " >变卖资产
+                </button>
             </td>
             <td>
                 <button v-on:click="transaction" v-bind:disabled="'active_estate' != status && 'active_insufficient' != status " >发起交易</button>
@@ -366,10 +368,14 @@
                         <td style="height: 50px" v-if="item.type == 'estate'">房屋卖价：{{item.detail[6] / 2}}</td>
                         <td style="height: 50px">空地卖价：{{item.price / 2}}</td>
                         <td style="height: 50px" v-if="item.type == 'estate'">
-                            <button v-bind:disabled="'active_selling' != status || item.roomLevel == 0 ">卖房</button>
+                            <button v-bind:disabled="'active_selling' != status || item.roomLevel == 0 "
+                                    v-on:click="sell('room', item.name)">
+                                卖房</button>
                         </td>
                         <td style="height: 50px">
-                            <button v-bind:disabled="'active_selling' != status">卖地</button>
+                            <button v-bind:disabled="'active_selling' != status || item.roomLevel != 0"
+                                    v-on:click="sell('estate', item.name)">
+                                卖地</button>
                         </td>
                     </tr>
                 </table>
@@ -749,8 +755,10 @@
                         requestDto.method = 'upgrade';
                         this.websock.send(JSON.stringify(requestDto))
                     },
-                    sell: function () {
+                    sell: function (type, name) {
                         requestDto.method = 'sell';
+                        requestDto.sellType = type;
+                        requestDto.sellName = name;
                         this.websock.send(JSON.stringify(requestDto))
                     },
                     transaction: function () {

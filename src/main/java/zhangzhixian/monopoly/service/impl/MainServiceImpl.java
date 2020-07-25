@@ -181,13 +181,28 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public void sell(RequestDTO requestDTO) {
+    public synchronized void sell(RequestDTO requestDTO) {
         // 返回当前用户可以变卖的地产
         String token = requestDTO.getToken();
         User user = users.stream().filter(u -> StringUtils.equals(u.getToken(), token)).findAny().orElse(null);
         if (Objects.isNull(user)) {
             return;
         }
+        if (StringUtils.isNotEmpty(requestDTO.getSellName())) {
+            map.stream().filter(g -> StringUtils.equals(g.getName(), requestDTO.getSellName())).findAny().ifPresent(grid -> {
+                if (StringUtils.equals(requestDTO.getSellType(), "room") && grid.getRoomLevel() >= 1) {
+                    grid.setRoomLevel(grid.getRoomLevel() - 1);
+                    user.setMoney(user.getMoney() + grid.getDetail().get(6) / 2);
+                    addMessage(String.format("%s卖出了%s的一栋房子，获得%s元", user.getName(), grid.getName(), grid.getDetail().get(6) / 2));
+                } else if (StringUtils.equals(requestDTO.getSellType(), "estate") && StringUtils.equals(token, grid.getOwner())){
+                    user.setMoney(user.getMoney() + grid.getPrice() / 2);
+                    grid.setOwnerColor("white");
+                    grid.setOwner(null);
+                    addMessage(String.format("%s抵押了%s，获得%s元", user.getName(), grid.getName(), grid.getPrice() / 2));
+                }
+            });
+        }
+
         List<Grid> collect = map.stream().filter(g -> StringUtils.equals(g.getOwner(), user.getToken()))
                 .sorted(Comparator.comparing(Grid::getType)).collect(Collectors.toList());
         if (collect.isEmpty()) {

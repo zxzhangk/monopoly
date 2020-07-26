@@ -123,6 +123,7 @@ public class MainServiceImpl implements MainService {
             case happy:
             case destiny:
                 getToCard(user, grid);
+                break;
             default:
                 nextUser(user, StatusEnum.waiting);
                 break;

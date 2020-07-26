@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class MainServiceImpl implements MainService {
@@ -96,36 +95,52 @@ public class MainServiceImpl implements MainService {
                 user.setPosition(user.getPosition() + num);
             }
             // 根据目的地块类型判断状态转化
-            Grid grid = map.get(user.getPosition());
-            addMessage(String.format("%s 骰子点数为 %s, 前进 %s 步，到达 %s", user.getName(), num, num, grid.getName()));
-            switch (grid.getType()) {
-                case tax:
-                    user.setMoney(user.getMoney() - grid.getPrice());
-                    addMessage(String.format("%s 扣税 %s", user.getName(), grid.getPrice()));
-                    nextUser(user, StatusEnum.waiting);
-                    break;
-                case prison:
-                    user.setPosition(10);
-                    addMessage(String.format("%s 进监狱了", user.getName()));
-                    nextUser(user, StatusEnum.jailed);
-                    break;
-                case estate:
-                case station:
-                case livelihood:
-                    getToEstate(user, grid, num);
-                    break;
-                case chance:
-                    getToChance(user, grid);
-                default:
-                    nextUser(user, StatusEnum.waiting);
-                    break;
-            }
+            addMessage(String.format("%s 骰子点数为 %s", user.getName(), num));
+            fire(user, num);
         }
     }
 
-    private void getToChance(User user, Grid grid) {
-        int i = random.nextInt(configuration.getChances().size());
-        Card card = configuration.getChances().get(i);
+    private void fire(User user, int num) {
+        Grid grid = map.get(user.getPosition());
+        addMessage(String.format("%s 到达 %s", user.getName(), grid.getName()));
+        switch (grid.getType()) {
+            case tax:
+                user.setMoney(user.getMoney() - grid.getPrice());
+                addMessage(String.format("%s 扣税 %s", user.getName(), grid.getPrice()));
+                nextUser(user, StatusEnum.waiting);
+                break;
+            case prison:
+                user.setPosition(10);
+                addMessage(String.format("%s 进监狱了", user.getName()));
+                nextUser(user, StatusEnum.jailed);
+                break;
+            case estate:
+            case station:
+            case livelihood:
+                getToEstate(user, grid, num);
+                break;
+            case chance:
+            case happy:
+            case destiny:
+                getToCard(user, grid);
+            default:
+                nextUser(user, StatusEnum.waiting);
+                break;
+        }
+    }
+
+    private void getToCard(User user, Grid grid) {
+        Card card = null;
+        if (grid.getType() == GridEnum.chance) {
+            int i = random.nextInt(configuration.getChances().size());
+            card = configuration.getChances().get(i);
+        } else if (grid.getType() == GridEnum.happy) {
+            int i = random.nextInt(configuration.getHappiness().size());
+            card = configuration.getHappiness().get(i);
+        } else {
+            int i = random.nextInt(configuration.getDestiny().size());
+            card = configuration.getDestiny().get(i);
+        }
         addMessage(user.getName() + " " + card.getName());
         switch (card.getType()) {
             case cost:
@@ -136,28 +151,31 @@ public class MainServiceImpl implements MainService {
                 break;
             case gainFromOther:
                 user.setMoney(user.getMoney() + (users.size() - 1) * card.getPrice());
+                Card finalCard = card;
                 users.forEach(u -> {
                     if (!u.getToken().equals(user.getToken())) {
-                        u.setMoney(u.getMoney() - card.getPrice());
-                        addMessage(String.format("%s失去%s元", u.getName(), card.getPrice()));
+                        u.setMoney(u.getMoney() - finalCard.getPrice());
+                        addMessage(String.format("%s失去%s元", u.getName(), finalCard.getPrice()));
                     }
                 });
                 break;
             case costTogether:
+                Card finalCard1 = card;
                 users.forEach(u -> {
-                    u.setMoney(u.getMoney() - card.getPrice());
-                    addMessage(String.format("%s失去%s元", u.getName(), card.getPrice()));
+                    u.setMoney(u.getMoney() - finalCard1.getPrice());
+                    addMessage(String.format("%s失去%s元", u.getName(), finalCard1.getPrice()));
                 });
                 break;
             case houseDuty:
+                Card finalCard2 = card;
                 int sum = map.stream().filter(g -> StringUtils.equals(g.getOwner(), user.getToken()))
                         .filter(g -> g.getType() == GridEnum.estate).mapToInt(g -> {
                             if (g.getRoomLevel() == 0) {
                                 return 0;
                             } else if (g.getRoomLevel() < 5) {
-                                return g.getRoomLevel() * card.getPrice();
+                                return g.getRoomLevel() * finalCard2.getPrice();
                             } else {
-                                return card.getHotelPrice();
+                                return finalCard2.getHotelPrice();
                             }
                         }).sum();
                 user.setMoney(user.getMoney() - sum);
@@ -169,6 +187,14 @@ public class MainServiceImpl implements MainService {
             case jailed:
                 user.setPosition(10);
                 nextUser(user, StatusEnum.jailed);
+                return;
+            case through:
+                if (user.getPosition() > card.getPrice()) {
+                    user.setMoney(user.getMoney() + 2000);
+                    addMessage(String.format("%s经过起点，得2000", user.getName()));
+                }
+                user.setPosition(card.getPrice());
+                fire(user, 0);
                 return;
             default:
                 break;

@@ -14,21 +14,21 @@ customize:
     - name: 寂弦
       nick: 弦
       color: cornflowerblue
-      token: xxx1
+      token: zzx
 
     - name: 钻头
       nick: 钻
       color: darkslategray
-      token: xxx2
+      token: sgj
 
     - name: 屈屈
       nick: 屈
       color: burlywood
-      token: xxx3
+      token: qzx
     - name: 玉婷
       nick: 婷
       color: indianred
-      token: xxx4
+      token: syt
   maps:
     - name: 起点
       type: start
@@ -227,7 +227,7 @@ customize:
       color: darkslategray
       price: 4000
       detail: 500,2000,6000,14000,17000,20000,2000
-  chances:
+  destiny:
     - name: 与木乃伊合照冲洗相片，费用300
       type: cost
       price: 300
@@ -277,4 +277,86 @@ customize:
     - name: 路不拾遗失主酬劳得1000
       type: gain
       price: 1000
+  happiness:
+    - name: 在外滩开音乐演奏会得2000
+      type: gain
+      price: 1000
+    - name: 修理石库门的四合院古迹花修缮费500元
+      type: cost
+      price: 500
+    - name: 违反交通规则——闯红灯罚款2000
+      type: cost
+      price: 500
+    - name: 拍摄龙华寺及玉佛寺美丽景观照片，参加展览得第一名得奖金1500元
+      type: gain
+      price: 1500
+    - name: 到南京路及淮海路逛街购物，每人花费300元
+      type: costTogether
+      price: 300
+    - name: 参观上海博物馆付门票100元
+      type: cost
+      price: 100
+    - name: 在浦东兼差担任地陪，酬劳1000元
+      type: gain
+      price: 1000
+    - name: 夜宿和平饭店，每人花费1800元
+      type: costTogether
+      price: 1800
+    - name: 参观城隍庙，购买纪念玉镯水晶项链礼物，花费800元
+      type: cost
+      price: 800
+    - name: 在东方明珠电视塔最顶层用餐，每人花费300元
+      type: costTogether
+      price: 300
+  chances:
+    - name: 直达徐家汇车站，如经过“起点”得2000
+      type: through
+      price: 15
+    - name: 前进到天目路，如经过“起点”得2000
+      type: through
+      price: 24
+    - name: 前进到中华路，如经过“起点”得2000
+      type: through
+      price: 11
+    - name: 酗酒闹事，罚款200
+      type: cost
+      price: 200
+    - name: 付户税，房屋每栋400，旅馆每栋1150
+      type: houseDuty
+      price: 400
+      hotelPrice: 1150
+    - name: 经营小本生意，获利1000
+      type: gain
+      price: 1000
+    - name: 击落战斗机，得奖金3000
+      type: gain
+      price: 3000
+    - name: 缴赴美留学保证金2400
+      type: cost
+      price: 2400
+    - name: 拘票——立刻坐牢，不得经“起点”
+      type: jailed
+      price: 0
+    - name: 出狱许可证
+      type: impunity
+      price: 0
+    - name: 付学费1500
+      type: cost
+      price: 1500
+    - name: 运动跳水冠军奖金1000
+      type: gain
+      price: 1000
+    - name: 夜宿和平饭店，花费1800
+      type: cost
+      price: 1800
+    - name: 行车超速，罚款150
+      type: cost
+      price: 150
+    - name: 银行付你利息500
+      type: gain
+      price: 500
+    - name: 整修自己所有房屋，房屋每栋250，旅馆每栋1000
+      type: houseDuty
+      price: 250
+      hotelPrice: 1000
 

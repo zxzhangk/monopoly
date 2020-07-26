@@ -19,5 +19,7 @@ public class CustomizeConfiguration {
     private List<User> users;
 
     private List<Card> chances;
+    private List<Card> destiny;
+    private List<Card> happiness;
 
 }

@@ -33,6 +33,10 @@ public enum CardEnum {
      * 入狱
      */
     jailed,
+    /**
+     * 直达
+     */
+    through,
 
 
 

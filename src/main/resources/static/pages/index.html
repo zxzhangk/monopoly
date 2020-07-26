@@ -32,8 +32,8 @@
 
     .info {
         width: 100%;
-        height: 90px;
-        line-height: 45px;
+        height: 80px;
+        line-height: 35px;
         border: 1px bisque solid;
         border-left: none;
         border-right: none;
@@ -44,17 +44,17 @@
 
     .bottom {
         width: 100%;
-        height: 30px;
+        height: 40px;
         line-height: 30px;
         text-align: center;
-        font-size: smaller;
+        font-size: large;
     }
 
     .user {
         width: 15%;
-        height: 25px;
-        line-height: 25px;
-        border: brown solid 2px;
+        height: 36px;
+        line-height: 36px;
+        border: brown solid 4px;
         color: black;
         float: left;
         margin-left: 3px;
@@ -82,6 +82,61 @@
     }
 
     button {
+        padding: 7px;
+        font-size: large;
+        font-weight: bolder;
+    }
+    .button{
+
+        display:inline-block;
+
+        zoom:1;/*zoomand*display=ie7hackfordisplay:inline-block*/
+
+        *display:inline;
+
+        vertical-align:baseline;
+
+        margin:02px;
+
+        outline:none;
+
+        cursor:pointer;
+
+        text-align:center;
+
+        text-decoration:none;
+
+        font:14px/100%Arial,Helvetica,sans-serif;
+
+        padding:.5em2em.55em;
+
+        text-shadow:01px1pxrgba(0,0,0,.3);
+
+        -webkit-border-radius:.5em;
+
+        -moz-border-radius:.5em;
+
+        border-radius:.5em;
+
+        -webkit-box-shadow:01px2pxrgba(0,0,0,.2);
+
+        -moz-box-shadow:01px2pxrgba(0,0,0,.2);
+
+        box-shadow:01px2pxrgba(0,0,0,.2);
+
+    }
+
+    .button:hover{
+
+        text-decoration:none;
+
+    }
+
+    .button:active{
+
+        position:relative;
+
+        top:1px;
 
     }
 </style>
@@ -237,7 +292,7 @@
                     <div class="user" v-for="u in map[39].users" v-bind:style="{'border': u.color + ' solid 4px'}" >{{u.nick}}</div>
                 </div>
             </td>
-            <td colspan="9" rowspan="2" style="line-height: 40px; font-size: larger">
+            <td colspan="9" rowspan="3" style="line-height: 50px; font-size: x-large">
                 <div v-for="m in messages" >{{m}}</div>
             </td>
             <td v-bind:style="{ color: map[11].color }">
@@ -292,29 +347,7 @@
                     <div class="user" v-for="u in map[37].users" v-bind:style="{'border': u.color + ' solid 4px'}" >{{u.nick}}</div>
                 </div>
             </td>
-            <td colspan="2">
-                <div class="bottom" v-for="u in users" v-bind:style="{ 'color': u.position != -1 ? u.color : 'grey' }" > {{u.name}} 剩余金钱 {{u.money}}</div>
-            </td>
-            <td>
-                <button v-on:click="sell"
-                        v-bind:disabled="'active_estate' != status && 'active_insufficient' != status && 'active_selling' != status " >变卖资产
-                </button>
-            </td>
-            <td>
-                <button v-on:click="transaction" v-bind:disabled="'active_estate' != status && 'active_insufficient' != status " >发起交易</button>
-            </td>
-            <td>
-                <button v-on:click="roll" v-bind:disabled="'init' != status && 'active' != status" >投掷骰子</button>
-            </td>
-            <td>
-                <button v-on:click="upgrade" v-bind:disabled="'active_estate' != status && 'active_selling' != status" >购买/盖楼</button>
-            </td>
-            <td>
-                <button v-on:click="pass" v-bind:disabled="'active_estate' != status && 'active_insufficient' != status && 'active_selling' != status " >跳过/破产
-                </button>
-            </td>
-            <td>{{status}}</td>
-            <td></td>
+
             <td v-bind:style="{ color: map[13].color }">
                 <div class="room" v-bind:style="{ 'background-color': map[13].ownerColor }">
                     <embed v-for="n in map[13].roomLevel" src="/room.svg" type="image/svg+xml"/>
@@ -341,7 +374,62 @@
                     <div class="user" v-for="u in map[36].users" v-bind:style="{'border': u.color + ' solid 4px'}" >{{u.nick}}</div>
                 </div>
             </td>
-            <td rowspan="6" colspan="2">
+            <td colspan="2">
+                <div class="bottom" v-for="u in users" v-bind:style="{ 'color': u.position != -1 ? u.color : 'grey' }" > {{u.name}} 金钱 {{u.money}}</div>
+            </td>
+            <td>
+                <button class="button" v-on:click="sell"
+                        v-bind:disabled="'active_estate' != status && 'active_insufficient' != status && 'active_selling' != status " >变卖资产
+                </button>
+            </td>
+            <td>
+                <button class="button" v-on:click="transaction"
+                        v-bind:disabled="'active_estate' != status && 'active_insufficient' != status " >发起交易
+                </button>
+            </td>
+            <td>
+                <button class="button" v-on:click="roll" v-bind:disabled="'init' != status && 'active' != status" >投掷骰子</button>
+            </td>
+            <td>
+                <button class="button" v-on:click="upgrade" v-bind:disabled="'active_estate' != status && 'active_selling' != status" >购买/盖楼
+                </button>
+            </td>
+            <td>
+                <button class="button" v-on:click="pass"
+                         v-bind:disabled="'active_estate' != status && 'active_insufficient' != status && 'active_selling' != status " >跳过/破产
+                </button>
+            </td>
+            <td>{{status}}</td>
+            <td></td>
+            <td v-bind:style="{ color: map[14].color }">
+                <div class="room" v-bind:style="{ 'background-color': map[14].ownerColor }">
+                    <embed v-for="n in map[14].roomLevel" src="/room.svg" type="image/svg+xml"/>
+                </div>
+                <div class="info" v-on:click="showDetail(map[14])">
+                    {{map[14].name}}<br>
+                    {{map[14].price}}
+                </div>
+                <div class="bottom">
+                    <div class="user" v-for="u in map[14].users" v-bind:style="{'border': u.color + ' solid 4px'}" >{{u.nick}}</div>
+                </div>
+            </td>
+
+        </tr>
+        <tr>
+            <td v-bind:style="{ color: map[35].color }">
+                <div class="room" v-bind:style="{ 'background-color': map[35].ownerColor }">
+                    <embed v-for="n in map[35].roomLevel" src="/room.svg" type="image/svg+xml"/>
+                </div>
+                <div class="info">
+                    {{map[35].name}}<br>
+                    {{map[35].price}}
+                </div>
+                <div class="bottom">
+                    <div class="user" v-for="u in map[35].users" v-bind:style="{'border': u.color + ' solid 4px'}" >{{u.nick}}</div>
+                </div>
+            </td>
+
+            <td rowspan="5" colspan="2">
                 <div class="detail" v-if="show">
                     <div class="detail_top" v-bind:style="{'background-color': show.color }">{{show.name}}</div>
                     <table>
@@ -358,7 +446,7 @@
                     </table>
                 </div>
             </td>
-            <td rowspan="6" colspan="7">
+            <td rowspan="5" colspan="7">
                 <table style="width: 80%;margin: 10%;height: 80%">
                     <tr v-for="(item,index) in asset">
                         <td style="height: 50px">
@@ -368,44 +456,20 @@
                         <td style="height: 50px" v-if="item.type == 'estate'">房屋卖价：{{item.detail[6] / 2}}</td>
                         <td style="height: 50px">空地卖价：{{item.price / 2}}</td>
                         <td style="height: 50px" v-if="item.type == 'estate'">
-                            <button v-bind:disabled="'active_selling' != status || item.roomLevel == 0 "
+                            <button class="button" v-bind:disabled="'active_selling' != status || item.roomLevel == 0 "
                                     v-on:click="sell('room', item.name)">
                                 卖房</button>
                         </td>
                         <td style="height: 50px">
-                            <button v-bind:disabled="'active_selling' != status || (item.roomLevel != 0 && item.type == estate)"
+                            <button class="button" v-bind:disabled="'active_selling' != status || (item.roomLevel != 0 && item.type == estate)"
                                     v-on:click="sell('estate', item.name)">
                                 卖地</button>
                         </td>
                     </tr>
                 </table>
             </td>
-            <td v-bind:style="{ color: map[14].color }">
-                <div class="room" v-bind:style="{ 'background-color': map[14].ownerColor }">
-                    <embed v-for="n in map[14].roomLevel" src="/room.svg" type="image/svg+xml"/>
-                </div>
-                <div class="info" v-on:click="showDetail(map[14])">
-                    {{map[14].name}}<br>
-                    {{map[14].price}}
-                </div>
-                <div class="bottom">
-                    <div class="user" v-for="u in map[14].users" v-bind:style="{'border': u.color + ' solid 4px'}" >{{u.nick}}</div>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td v-bind:style="{ color: map[35].color }">
-                <div class="room" v-bind:style="{ 'background-color': map[35].ownerColor }">
-                    <embed v-for="n in map[35].roomLevel" src="/room.svg" type="image/svg+xml"/>
-                </div>
-                <div class="info">
-                    {{map[35].name}}<br>
-                    {{map[35].price}}
-                </div>
-                <div class="bottom">
-                    <div class="user" v-for="u in map[35].users" v-bind:style="{'border': u.color + ' solid 4px'}" >{{u.nick}}</div>
-                </div>
-            </td>
+
+
             <td v-bind:style="{ color: map[15].color }">
                 <div class="room" v-bind:style="{ 'background-color': map[15].ownerColor }">
                     <embed v-for="n in map[15].roomLevel" src="/room.svg" type="image/svg+xml"/>

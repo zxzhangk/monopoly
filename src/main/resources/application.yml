@@ -15,20 +15,20 @@ customize:
       nick: 弦
       color: cornflowerblue
       token: zzx
+    - name: 玉婷
+      nick: 婷
+      color: indianred
+      token: syt
+    - name: 屈屈
+      nick: 屈
+      color: deeppink
+      token: qzx
 
     - name: 钻头
       nick: 钻
       color: darkslategray
       token: sgj
 
-    - name: 屈屈
-      nick: 屈
-      color: burlywood
-      token: qzx
-    - name: 玉婷
-      nick: 婷
-      color: indianred
-      token: syt
   maps:
     - name: 起点
       type: start

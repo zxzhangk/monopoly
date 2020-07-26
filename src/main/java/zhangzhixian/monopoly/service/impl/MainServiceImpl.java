@@ -279,8 +279,14 @@ public class MainServiceImpl implements MainService {
                     addMessage(String.format("%s卖出了%s的一栋房子，获得%s元", user.getName(), grid.getName(), grid.getDetail().get(6) / 2));
                 } else if (StringUtils.equals(requestDTO.getSellType(), "estate") && StringUtils.equals(token, grid.getOwner())){
                     user.setMoney(user.getMoney() + grid.getPrice() / 2);
+                    if (grid.getType() == GridEnum.station) {
+                        List<Grid> station = map.stream().filter(g -> g.getType() == GridEnum.station)
+                                .filter(g -> StringUtils.equals(g.getOwner(), token)).collect(Collectors.toList());
+                        station.forEach(s -> s.setRoomLevel(station.size() - 2));
+                    }
                     grid.setOwnerColor("white");
                     grid.setOwner(null);
+                    grid.setRoomLevel(0);
                     addMessage(String.format("%s抵押了%s，获得%s元", user.getName(), grid.getName(), grid.getPrice() / 2));
                 }
             });
@@ -306,7 +312,7 @@ public class MainServiceImpl implements MainService {
             int cost = 0;
             if (grid.getType() == GridEnum.livelihood) {
                 cost = map.stream().filter(g -> g.getType() == GridEnum.livelihood)
-                        .allMatch(g -> StringUtils.equals(g.getOwner(), user.getToken())) ? num * 100 : num * 10;
+                        .allMatch(g -> StringUtils.equals(g.getOwner(), grid.getOwner())) ? num * 100 : num * 10;
             } else {
                 cost = grid.getDetail().get(grid.getRoomLevel());
             }
@@ -392,7 +398,7 @@ public class MainServiceImpl implements MainService {
 
     @Override
     public void addMessage(String message) {
-        if (messageList.size() >= 6) {
+        if (messageList.size() >= 7) {
             messageList.remove(0);
         }
         messageList.add(message);
